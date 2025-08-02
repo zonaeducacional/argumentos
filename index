@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Oficina de Argumentos</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js" xintegrity="sha512-GsLlZN/3F2ErC5ifS5QtgpiJtWd43JWSuIgh7mbzZ8zBps+dvLusV+eNQATqgA/HdeKFVgA5v3S/cIrLF7QnIg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=Lora:wght@400;700&display=swap" rel="stylesheet">
+
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .font-serif { font-family: 'Lora', serif; }
+
+        #writing-area {
+            background-color: #fff;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+            line-height: 1.8;
+            font-size: 1.125rem;
+            color: #1a202c;
+        }
+        .control-button { transition: all 0.2s ease; }
+        .control-button:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        .choice-card { cursor: pointer; transition: transform 0.2s ease, box-shadow 0.2s ease; }
+        .choice-card:hover { transform: scale(1.03); box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
+        
+        #btn-challenge-icon {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background-color: rgba(255, 255, 255, 0.7);
+            border-radius: 50%;
+            padding: 0.5rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        #btn-challenge-icon:hover {
+            transform: scale(1.1);
+            background-color: rgba(255, 255, 255, 1);
+        }
+    </style>
+</head>
+<body class="bg-gray-100 text-gray-800 flex items-center justify-center min-h-screen p-4">
+
+    <!-- TELA 1: MENU PRINCIPAL -->
+    <div id="main-screen" class="w-full max-w-4xl text-center">
+        <h1 class="text-4xl md:text-5xl font-bold mb-4 font-serif">Oficina de Argumentos</h1>
+        <div class="text-lg text-gray-600 mb-12 mx-auto max-w-2xl space-y-4">
+            <p>Um espaço para construir, refinar e fortalecer as suas ideias. Aqui, cada parágrafo é um passo, e cada argumento, uma ferramenta.</p>
+        </div>
+        <div class="flex flex-col sm:flex-row justify-center items-center gap-8">
+            <button id="btn-new-essay" class="control-button bg-gray-800 text-white font-bold py-4 px-8 rounded-lg text-xl">Escrever Redação</button>
+            <button id="btn-inspiration" class="control-button bg-teal-600 text-white font-bold py-4 px-8 rounded-lg text-xl">Ver Textos Exemplo</button>
+            <button id="btn-main-gallery" class="control-button bg-blue-600 text-white font-bold py-4 px-8 rounded-lg text-xl">Aceder à Galeria</button>
+        </div>
+    </div>
+
+    <!-- TELA 2: ESCOLHA DO MODELO -->
+    <div id="template-selection-screen" class="hidden w-full max-w-4xl text-center">
+        <h1 class="text-3xl md:text-4xl font-bold mb-4 font-serif">Passo Um: A Estrutura</h1>
+        <p class="text-lg text-gray-600 mb-12">Escolha um modelo para guiar a sua escrita.</p>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div class="template-option choice-card bg-white p-8 rounded-lg shadow-md" data-template="enem"><h2 class="text-2xl font-bold mb-4">Modelo ENEM</h2><p class="text-gray-600">Estrutura clássica com Introdução, 2 Desenvolvimentos e Proposta de Intervenção.</p></div>
+            <div class="template-option choice-card bg-white p-8 rounded-lg shadow-md" data-template="free"><h2 class="text-2xl font-bold mb-4">Folha em Branco</h2><p class="text-gray-600">Para ensaios, artigos de opinião ou qualquer texto que exija liberdade total de criação.</p></div>
+        </div>
+        <button id="btn-back-to-main-menu-1" class="mt-8 text-gray-600 hover:text-gray-800 font-semibold">Voltar ao Menu</button>
+    </div>
+
+    <!-- TELA 3: ESCRITA DA REDAÇÃO -->
+    <div id="writing-screen" class="hidden w-full h-screen flex flex-col items-center p-2 sm:p-4">
+        <div class="w-full max-w-4xl flex-grow flex flex-col relative">
+            <textarea id="writing-area" class="w-full h-full flex-grow p-8 md:p-12 font-serif rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
+            <button id="btn-challenge-icon"><svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" /></svg></button>
+            <div class="flex justify-between items-center mt-2 text-sm text-gray-500">
+                <span id="word-counter">0 palavras</span>
+            </div>
+        </div>
+        <div class="w-full max-w-4xl mt-4 flex-shrink-0">
+            <div id="controls" class="flex flex-wrap gap-2 sm:gap-4 justify-center">
+                <button id="btn-toolbox" class="control-button bg-purple-600 text-white font-bold py-2 px-4 sm:px-5 rounded-lg text-sm sm:text-base">Ferramentas</button>
+                <button id="btn-publish" class="control-button bg-indigo-600 text-white font-bold py-2 px-4 sm:px-5 rounded-lg text-sm sm:text-base" disabled>Publicar</button>
+                <button id="btn-pdf" class="control-button bg-green-600 text-white font-bold py-2 px-4 sm:px-5 rounded-lg text-sm sm:text-base" disabled>Baixar PDF</button>
+                <button id="btn-back" class="control-button bg-gray-500 text-white font-bold py-2 px-4 sm:px-5 rounded-lg text-sm sm:text-base">Começar de Novo</button>
+            </div>
+            <div id="feedback-message" class="mt-2 h-6 text-center font-semibold opacity-0 transition-opacity"></div>
+        </div>
+    </div>
+    
+    <!-- TELA 4: INSPIRAÇÃO (NOVA) -->
+    <div id="inspiration-screen" class="hidden w-full max-w-4xl text-center">
+        <h1 class="text-4xl md:text-5xl font-bold mb-4 font-serif">Textos Nota 10</h1>
+        <p class="text-lg text-gray-600 mb-12">Analise a estrutura e os argumentos de redações que alcançaram a excelência.</p>
+        <div id="inspiration-list" class="space-y-6 text-left"></div>
+        <button id="btn-back-to-main-2" class="control-button mt-12 bg-gray-500 text-white font-bold py-3 px-6 rounded-lg">Voltar ao Menu</button>
+    </div>
+
+    <!-- MODAIS -->
+    <div id="challenge-modal" class="hidden fixed inset-0 bg-gray-900 bg-opacity-75 flex items-center justify-center p-4 z-50">
+        <div class="bg-white rounded-lg shadow-xl p-8 max-w-lg w-full text-center relative">
+            <h2 class="text-2xl font-bold mb-4">Proposta de Redação</h2>
+            <p id="challenge-text" class="text-lg text-gray-700 mb-8"></p>
+            <button class="btn-close-modal control-button bg-gray-800 text-white font-bold py-2 px-6 rounded-lg">Fechar</button>
+        </div>
+    </div>
+    <div id="toolbox-modal" class="hidden fixed inset-0 bg-gray-900 bg-opacity-75 flex items-center justify-center p-4 z-50">
+        <div class="bg-white rounded-lg shadow-xl p-8 max-w-2xl w-full text-left relative">
+            <h2 class="text-2xl font-bold mb-6">Caixa de Ferramentas</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div><h3 class="font-semibold mb-2">Continuação</h3><p class="text-gray-600">Além disso, Ademais, Outrossim, Nesse sentido...</p></div>
+                <div><h3 class="font-semibold mb-2">Conclusão</h3><p class="text-gray-600">Portanto, Logo, Em suma, Dessa forma, Conclui-se que...</p></div>
+                <div><h3 class="font-semibold mb-2">Oposição</h3><p class="text-gray-600">Contudo, Todavia, Entretanto, No entanto, Por outro lado...</p></div>
+                <div><h3 class="font-semibold mb-2">Causa/Efeito</h3><p class="text-gray-600">Por conseguinte, Como resultado, Visto que, Já que...</p></div>
+            </div>
+            <button class="btn-close-modal control-button mt-8 bg-gray-800 text-white font-bold py-2 px-6 rounded-lg">Fechar</button>
+        </div>
+    </div>
+    <div id="viewer-modal" class="hidden fixed inset-0 bg-gray-900 bg-opacity-80 flex items-center justify-center p-4 z-50">
+        <div class="bg-white w-full max-w-3xl h-[90vh] p-8 md:p-12 overflow-y-auto relative rounded-lg">
+            <h2 id="viewer-title" class="text-2xl font-bold mb-4 font-serif"></h2>
+            <p id="viewer-content" class="text-lg leading-relaxed font-serif whitespace-pre-wrap"></p>
+            <button class="btn-close-modal absolute top-4 right-4 text-gray-500 text-3xl font-bold">&times;</button>
+        </div>
+    </div>
+
+    <script>
+        // --- Elementos do DOM ---
+        const screens = {
+            main: document.getElementById('main-screen'),
+            template: document.getElementById('template-selection-screen'),
+            writing: document.getElementById('writing-screen'),
+            inspiration: document.getElementById('inspiration-screen'),
+        };
+        const btnNewEssay = document.getElementById('btn-new-essay');
+        const btnInspiration = document.getElementById('btn-inspiration');
+        const templateOptions = document.querySelectorAll('.template-option');
+        const writingArea = document.getElementById('writing-area');
+        const wordCounter = document.getElementById('word-counter');
+        const btnPdf = document.getElementById('btn-pdf');
+        const btnPublish = document.getElementById('btn-publish');
+        const btnBack = document.getElementById('btn-back');
+        const btnBackToMainMenu1 = document.getElementById('btn-back-to-main-menu-1');
+        const btnBackToMain2 = document.getElementById('btn-back-to-main-2');
+        const btnToolbox = document.getElementById('btn-toolbox');
+        const btnChallengeIcon = document.getElementById('btn-challenge-icon');
+        const challengeModal = document.getElementById('challenge-modal');
+        const toolboxModal = document.getElementById('toolbox-modal');
+        const viewerModal = document.getElementById('viewer-modal');
+        const challengeText = document.getElementById('challenge-text');
+        const viewerTitle = document.getElementById('viewer-title');
+        const viewerContent = document.getElementById('viewer-content');
+        const closeButtons = document.querySelectorAll('.btn-close-modal');
+        const feedbackMessage = document.getElementById('feedback-message');
+        const inspirationList = document.getElementById('inspiration-list');
+
+        // --- Lógica de Navegação ---
+        function showScreen(screenName) {
+            Object.values(screens).forEach(s => s && s.classList.add('hidden'));
+            if (screens[screenName]) screens[screenName].classList.remove('hidden');
+        }
+
+        btnNewEssay.addEventListener('click', () => showScreen('template'));
+        btnInspiration.addEventListener('click', () => {
+            renderInspirationList();
+            showScreen('inspiration');
+        });
+        btnBackToMainMenu1.addEventListener('click', () => showScreen('main'));
+        btnBackToMain2.addEventListener('click', () => showScreen('main'));
+        btnBack.addEventListener('click', () => {
+            writingArea.value = '';
+            updateWordCount();
+            showScreen('main');
+        });
+
+        // --- Lógica dos Modelos ---
+        const templates = {
+            enem: `[INTRODUÇÃO: Apresente o tema e a sua tese aqui. Contextualize o problema de forma clara e objetiva.]\n\n[DESENVOLVIMENTO 1: Apresente o seu primeiro argumento. Utilize dados, exemplos ou citações para fortalecer a sua posição.]\n\n[DESENVOLVIMENTO 2: Apresente o seu segundo argumento, conectando-o ao primeiro. Aprofunde a análise e mostre as consequências do problema.]\n\n[CONCLUSÃO: Retome a sua tese e apresente uma Proposta de Intervenção Social (PIS) detalhada. Responda: Quem fará? O quê? Como? Para quê? Com que detalhamento?]`,
+            free: ''
+        };
+
+        templateOptions.forEach(option => {
+            option.addEventListener('click', () => {
+                const templateKey = option.dataset.template;
+                writingArea.value = templates[templateKey];
+                updateWordCount();
+                showScreen('writing');
+                writingArea.focus();
+            });
+        });
+
+        // --- Lógica da Escrita ---
+        function updateWordCount() {
+            const text = writingArea.value.trim();
+            const wordCount = text.length > 0 ? text.split(/\s+/).length : 0;
+            wordCounter.textContent = `${wordCount} palavras`;
+            const hasText = text.length > 0;
+            btnPdf.disabled = !hasText;
+            btnPublish.disabled = !hasText;
+        }
+        writingArea.addEventListener('input', updateWordCount);
+
+        // --- Lógica dos Modais ---
+        const challenges = [
+            "A persistência da violência contra a mulher na sociedade brasileira.",
+            "O desafio de combater o desmatamento na Amazônia.",
+            "O impacto das 'fake news' no processo democrático.",
+            "Caminhos para combater a intolerância religiosa no Brasil.",
+            "A importância da valorização do professor para o futuro da educação."
+        ];
+
+        btnChallengeIcon.addEventListener('click', () => {
+            const randomIndex = Math.floor(Math.random() * challenges.length);
+            challengeText.textContent = challenges[randomIndex];
+            challengeModal.classList.remove('hidden');
+        });
+
+        btnToolbox.addEventListener('click', () => toolboxModal.classList.remove('hidden'));
+
+        closeButtons.forEach(btn => {
+            btn.addEventListener('click', () => {
+                challengeModal.classList.add('hidden');
+                toolboxModal.classList.add('hidden');
+                viewerModal.classList.add('hidden');
+            });
+        });
+        
+        // --- Lógica da Inspiração ---
+        const exampleEssays = [
+            {
+                title: "Invisibilidade e registro civil: garantia de acesso à cidadania no Brasil",
+                text: `Em "Vidas secas", obra literária do modernista Graciliano Ramos, Fabiano e sua família vivem uma situação degradante marcada pela miséria. Na trama, os filhos do protagonista não recebem nomes, sendo chamados apenas como "filho mais velho" e "filho mais novo", uma representação da desumanização e da invisibilidade social. Fora da ficção, a questão do registro civil como garantia de acesso à cidadania no Brasil é um desafio complexo, motivado pela negligência governamental e pela desigualdade social.\n\nDiante desse cenário, a falta de ação do Estado é um dos principais entraves para a universalização do registro civil. Segundo o filósofo John Rawls, em sua obra "Uma Teoria da Justiça", um governo justo deve garantir as liberdades básicas e a igualdade de oportunidades para todos os cidadãos. No entanto, a burocracia excessiva e a falta de postos de atendimento em áreas remotas ou de baixa renda criam barreiras que impedem milhões de brasileiros de obterem a certidão de nascimento, o primeiro passo para o exercício pleno da cidadania.\n\nAdemais, a desigualdade social agrava o problema. Pessoas em situação de vulnerabilidade, como populações ribeirinhas, indígenas e moradores de periferias, são as mais afetadas pela falta de acesso a cartórios. Essa exclusão documental gera um ciclo vicioso: sem documentos, não é possível matricular-se em escolas, ter acesso a programas sociais como o Bolsa Família ou conseguir um emprego formal, perpetuando a miséria e a invisibilidade denunciadas por Graciliano Ramos.\n\nPortanto, para mitigar essa problemática, é imperativo que o Estado, por meio do Ministério da Cidadania em parceria com as secretarias estaduais de Assistência Social, promova mutirões de registro civil em comunidades remotas e periféricas. Essa ação deve ocorrer por meio da instalação de postos de atendimento móveis e da simplificação do processo de emissão de documentos, com a contratação de mais agentes públicos. O objetivo é desburocratizar o acesso e levar o serviço até onde o cidadão está, a fim de que, diferentemente dos filhos de Fabiano, todos os brasileiros tenham seu nome e sua existência oficialmente reconhecidos, garantindo-lhes o direito fundamental à cidadania.`
+            }
+        ];
+
+        function renderInspirationList() {
+            inspirationList.innerHTML = '';
+            exampleEssays.forEach(essay => {
+                const essayEl = document.createElement('div');
+                essayEl.className = 'choice-card bg-white p-6 rounded-lg shadow-md';
+                essayEl.innerHTML = `<h3 class="text-xl font-bold mb-2">${essay.title}</h3>`;
+                essayEl.addEventListener('click', () => viewInspirationEssay(essay));
+                inspirationList.appendChild(essayEl);
+            });
+        }
+
+        function viewInspirationEssay(essay) {
+            viewerTitle.textContent = essay.title;
+            viewerContent.textContent = essay.text;
+            viewerModal.classList.remove('hidden');
+        }
+
+        // --- GERAR PDF ---
+        function showFeedback(message, isError = false) {
+            feedbackMessage.textContent = message;
+            feedbackMessage.className = `mt-2 h-6 text-center font-semibold opacity-100 transition-opacity ${isError ? 'text-red-600' : 'text-green-700'}`;
+            setTimeout(() => { feedbackMessage.classList.replace('opacity-100', 'opacity-0'); }, 3000);
+        }
+
+        btnPdf.addEventListener('click', () => {
+            const element = document.createElement('div');
+            element.innerHTML = writingArea.value.replace(/\n/g, '<br>');
+            element.className = 'p-8 font-serif text-lg';
+
+            const options = {
+                margin: [1, 1, 1, 1], filename: 'redacao_oficina.pdf',
+                image: { type: 'jpeg', quality: 0.98 },
+                html2canvas: { scale: 2 },
+                jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' }
+            };
+
+            html2pdf().set(options).from(element).save().then(() => {
+                showFeedback('Redação guardada com sucesso!');
+            }).catch(err => {
+                console.error("Erro ao gerar PDF:", err);
+                showFeedback('Ocorreu um erro ao guardar a redação.', true);
+            });
+        });
+        
+        // --- Inicialização ---
+        showScreen('main');
+        // A lógica da galeria será reativada no futuro
+        document.getElementById('btn-main-gallery').style.display = 'none'; // Esconde o botão da galeria por agora
+        document.getElementById('btn-publish').style.display = 'none'; // Esconde o botão de publicar por agora
+
+    </script>
+</body>
+</html>
